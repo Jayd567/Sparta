@@ -1,0 +1,506 @@
+<title>Sparta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root {
+    --void: #16110d;
+    --surface: #1e1712;
+    --surface-2: #271e17;
+    --line: #4a3c2c;
+    --bronze: #c58a44;
+    --bronze-bright: #e0a75e;
+    --blood: #9c3626;
+    --blood-bright: #c24a35;
+    --stone: #9a8f7c;
+    --parchment: #ece1cc;
+    --parchment-dim: #c9bda4;
+    --shadow: rgba(0,0,0,0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      /* dark is the native mode of this design; no change needed */
+    }
+  }
+
+  :root[data-theme="dark"] {
+    /* explicit dark matches default */
+  }
+
+  :root[data-theme="light"] {
+    --void: #ece3d0;
+    --surface: #f6efe0;
+    --surface-2: #ede2cb;
+    --line: #cdbd9c;
+    --bronze: #96602c;
+    --bronze-bright: #7d4e22;
+    --blood: #8a2c1e;
+    --blood-bright: #6f2116;
+    --stone: #6b6252;
+    --parchment: #241c14;
+    --parchment-dim: #4a4030;
+    --shadow: rgba(60,45,20,0.18);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--parchment);
+    font-family: "Spectral", Georgia, "Times New Roman", serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--blood); color: var(--parchment); }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+  }
+
+  h1, h2, h3, .eyebrow, .btn, nav, .ip-label {
+    font-family: "Cinzel", "Trajan Pro", Georgia, serif;
+  }
+
+  h1, h2, h3 { text-wrap: balance; letter-spacing: 0.02em; }
+
+  /* ---------- background texture: coursed stone blocks ---------- */
+  .stonefield {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--void);
+    background-image:
+      repeating-linear-gradient(var(--line) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 118px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 118px);
+    background-position: 0 0, 0 0, 59px 46px;
+    background-size: 100% 46px, 118px 92px, 118px 92px;
+    opacity: 0.12;
+  }
+
+  /* ---------- nav ---------- */
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--void) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem clamp(1.25rem, 4vw, 3rem);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    font-size: 1.05rem;
+    text-decoration: none;
+    color: var(--parchment);
+  }
+  .brand-mark {
+    width: 22px; height: 22px;
+    background: var(--blood-bright);
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    flex: none;
+  }
+  nav.links { display: flex; gap: clamp(1rem, 3vw, 2.2rem); }
+  nav.links a {
+    text-decoration: none;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    color: var(--parchment-dim);
+    text-transform: uppercase;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  nav.links a:hover, nav.links a:focus-visible { color: var(--bronze-bright); border-color: var(--bronze); }
+  nav.links a:focus-visible { outline: none; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    padding: clamp(4.5rem, 12vw, 8rem) 0 clamp(3.5rem, 8vw, 5.5rem);
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  .hero-rule {
+    width: 120px;
+    height: 3px;
+    margin: 1.9rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--blood-bright), transparent);
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--bronze-bright);
+    margin: 0 0 1.6rem;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: "";
+    width: 28px; height: 1px;
+    background: var(--bronze);
+  }
+  h1.title {
+    font-size: clamp(3.4rem, 12vw, 7.2rem);
+    font-weight: 900;
+    line-height: 0.92;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--parchment);
+    text-shadow: 0 2px 0 var(--shadow), 0 0 60px color-mix(in srgb, var(--blood) 35%, transparent);
+  }
+  .title em {
+    font-style: normal;
+    color: var(--blood-bright);
+  }
+  .tagline {
+    max-width: 34rem;
+    margin: 1.6rem auto 0;
+    font-size: 1.15rem;
+    color: var(--parchment-dim);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2.6rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.95rem 1.9rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-decoration: none;
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  .btn:focus-visible { outline: 2px solid var(--bronze-bright); outline-offset: 3px; }
+  .btn-primary { background: var(--blood-bright); color: #fff5ec; }
+  .btn-ghost { background: transparent; color: var(--parchment); border: 1px solid var(--line); }
+
+  /* ---------- ip card ---------- */
+  .ip-card {
+    margin: 3.2rem auto 0;
+    max-width: 30rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+    padding: 1.4rem 1.7rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    box-shadow: 0 18px 40px var(--shadow);
+  }
+  .ip-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin: 0 0 0.35rem;
+  }
+  .ip-value {
+    font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--bronze-bright);
+    letter-spacing: 0.01em;
+  }
+  .copy-btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--surface-2);
+    color: var(--parchment-dim);
+    border: 1px solid var(--line);
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    flex: none;
+  }
+  .copy-btn:hover { color: var(--bronze-bright); border-color: var(--bronze); }
+  .copy-btn:focus-visible { outline: 2px solid var(--bronze-bright); outline-offset: 2px; }
+
+  /* ---------- sections ---------- */
+  section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+  .section-head { max-width: 38rem; margin: 0 0 2.8rem; }
+  .section-head .eyebrow { margin-bottom: 1rem; }
+  .section-head h2 {
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    margin: 0 0 0.8rem;
+    text-transform: uppercase;
+  }
+  .section-head p { color: var(--parchment-dim); margin: 0; font-size: 1.02rem; }
+
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line), transparent);
+    margin: 0;
+  }
+
+  /* ---------- features ---------- */
+  .feature-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  .feature { position: relative; padding-left: 1.4rem; }
+  .feature::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.35em;
+    width: 3px;
+    height: 1.3em;
+    background: var(--bronze);
+  }
+  .feature h3 {
+    font-size: 1.2rem;
+    margin: 0 0 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--bronze-bright);
+  }
+  .feature p { margin: 0; color: var(--parchment-dim); font-size: 1rem; max-width: 30ch; }
+
+  @media (max-width: 640px) {
+    .feature-pair { grid-template-columns: 1fr; gap: 1.8rem; }
+  }
+
+  /* ---------- rules list ---------- */
+  .rules-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .rules-list li {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 1.2rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rules-list .rank {
+    font-family: "JetBrains Mono", monospace;
+    color: var(--bronze);
+    font-size: 0.85rem;
+    padding-top: 0.15rem;
+  }
+  .rules-list strong { color: var(--parchment); }
+  .rules-list span { color: var(--parchment-dim); }
+
+  /* ---------- discord cta ---------- */
+  .discord-band {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+    padding: clamp(2.2rem, 5vw, 3.4rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.8rem;
+  }
+  .discord-band h2 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(1.7rem, 3.4vw, 2.2rem);
+    text-transform: uppercase;
+  }
+  .discord-band p { margin: 0; color: var(--parchment-dim); max-width: 30rem; }
+  .discord-copy { flex: 1 1 20rem; }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 2.2rem 0 2.6rem;
+  }
+  .foot-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--stone);
+  }
+  .foot-row a { text-decoration: none; color: var(--stone); }
+  .foot-row a:hover { color: var(--bronze-bright); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media (max-width: 560px) {
+    nav.links { display: none; }
+    .ip-card { flex-direction: column; align-items: stretch; text-align: center; }
+    .rules-list li { grid-template-columns: 2.4rem 1fr; }
+  }
+</style>
+
+<div class="stonefield"></div>
+
+<header class="top">
+  <div class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      SPARTA
+    </a>
+    <nav class="links">
+      <a href="#join">Join</a>
+      <a href="#features">Features</a>
+      <a href="#rules">Rules</a>
+      <a href="#discord">Discord</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">A Minecraft Survival Server</p>
+      <h1 class="title">This is<br><em>Sparta</em></h1>
+      <div class="hero-rule" aria-hidden="true"></div>
+      <p class="tagline">A survival server for people who actually want to build stuff. Join up, grab some land, and get to know the community.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#join">How to Join</a>
+        <a class="btn btn-ghost" href="https://discord.gg/pcfhybP8Ny" target="_blank" rel="noopener">Join the Discord</a>
+      </div>
+
+      <div class="ip-card" id="join">
+        <div>
+          <p class="ip-label">Server Address</p>
+          <p class="ip-value" id="ip-text">spartasmp.com</p>
+        </div>
+        <button class="copy-btn" id="copy-ip" type="button">Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Features</p>
+        <h2>What you'll find here</h2>
+        <p>A quick rundown of what the server's about.</p>
+      </div>
+      <div class="feature-pair">
+        <div class="feature">
+          <h3>Survival</h3>
+          <p>Mostly vanilla, with a few carefully picked additions. No pay-to-win — everything's earned in-game, not bought.</p>
+        </div>
+        <div class="feature">
+          <h3>Land Claims</h3>
+          <p>Claim your base so other players can't grief it. Outside your claim, the world stays open for anyone to explore.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="rules">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Rules</p>
+        <h2>Keep it simple</h2>
+        <p>A short list, that's it.</p>
+      </div>
+      <ul class="rules-list">
+        <li>
+          <span class="rank">1</span>
+          <div><strong>Be respectful.</strong> <span>— treat other players the way you'd want to be treated.</span></div>
+        </li>
+        <li>
+          <span class="rank">2</span>
+          <div><strong>No griefing or stealing.</strong> <span>— unless it's part of an agreed-on raid or PvP event.</span></div>
+        </li>
+        <li>
+          <span class="rank">3</span>
+          <div><strong>No cheats or hacked clients.</strong> <span>— play with what everyone else has.</span></div>
+        </li>
+        <li>
+          <span class="rank">4</span>
+          <div><strong>Keep chat friendly.</strong> <span>— banter's fine, harassment isn't.</span></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="discord">
+    <div class="wrap">
+      <div class="discord-band">
+        <div class="discord-copy">
+          <h2>Join the community</h2>
+          <p>Server news, event announcements, trading, and a place to chat before you even log in. Most of the community hangs out here.</p>
+        </div>
+        <a class="btn btn-primary" href="https://discord.gg/pcfhybP8Ny" target="_blank" rel="noopener">Join the Discord</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>Sparta Minecraft Server</span>
+    <a href="https://discord.gg/pcfhybP8Ny" target="_blank" rel="noopener">discord.gg/pcfhybP8Ny</a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('copy-ip');
+    var text = document.getElementById('ip-text');
+    if (!btn || !text) return;
+    btn.addEventListener('click', function () {
+      var value = text.textContent.trim();
+      var done = function () {
+        var original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = original; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(done).catch(done);
+      } else {
+        done();
+      }
+    });
+  })();
+</script>
